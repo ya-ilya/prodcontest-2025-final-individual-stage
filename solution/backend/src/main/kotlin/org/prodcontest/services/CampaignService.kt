@@ -25,7 +25,7 @@ class CampaignService(
     fun findAd(
         client: Client
     ): List<Campaign> {
-        return campaignRepository.findAd(
+        return campaignRepository.findAds(
             client.gender,
             client.age,
             client.location,

@@ -23,6 +23,10 @@ class ClientService(private val clientRepository: ClientRepository) {
         location: String,
         gender: Gender
     ): Client {
+        if (clientRepository.findByLogin(login).isPresent) {
+            throw ResponseStatusException(HttpStatus.CONFLICT)
+        }
+
         return clientRepository.save(
             Client(
                 login,

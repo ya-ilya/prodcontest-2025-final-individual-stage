@@ -19,13 +19,11 @@ class AdvertisersController(private val advertiserService: AdvertiserService) {
 
     @PostMapping("/bulk")
     fun bulk(@Valid @RequestBody request: List<AdvertiserUpsertRequest>): ResponseEntity<Any> {
-        request.forEach {
+        return ResponseEntity(request.map {
             advertiserService.createOrUpdate(
                 it.advertiserId,
                 it.name
-            )
-        }
-
-        return ResponseEntity(HttpStatus.CREATED)
+            ).toResponse()
+        }, HttpStatus.CREATED)
     }
 }

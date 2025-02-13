@@ -19,14 +19,14 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
             AND c.endDate >= :currentDate
             ORDER BY COALESCE(
                 (
-                    SELECT s FROM c.advertiser.mlScores s
+                    SELECT MAX(s.score) FROM c.advertiser.mlScores s
                     WHERE s.client.id = :clientId
                 ),
                 0
             )
         """
     )
-    fun findAd(
+    fun findAds(
         @Param("gender") gender: Gender,
         @Param("age") age: Int,
         @Param("location") location: String,
