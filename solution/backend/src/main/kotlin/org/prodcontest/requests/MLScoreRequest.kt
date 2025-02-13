@@ -1,10 +1,12 @@
-package org.prodcontest.responses
+package org.prodcontest.requests
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
-class AdvertiserResponse(
+class MLScoreRequest(
+    @JsonProperty("client_id")
+    val clientId: UUID,
     @JsonProperty("advertiser_id")
     val advertiserId: UUID,
-    val name: String
+    val score: Int
 )

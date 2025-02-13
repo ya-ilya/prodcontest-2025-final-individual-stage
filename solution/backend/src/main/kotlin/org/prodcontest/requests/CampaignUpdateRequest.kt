@@ -8,15 +8,15 @@ import org.prodcontest.entities.campaign.CampaignTargeting
 class CampaignUpdateRequest(
     @JsonProperty("cost_per_impression")
     @Min(0)
-    val costPerImpression: Float,
+    val costPerImpression: Float? = null,
     @JsonProperty("cost_per_click")
     @Min(0)
-    val costPerClick: Float,
+    val costPerClick: Float? = null,
     @JsonProperty("ad_title")
     @Size(min = 2, max = 256)
-    val adTitle: String,
+    val adTitle: String? = null,
     @JsonProperty("ad_text")
     @Size(min = 2, max = 8192)
-    val adText: String,
+    val adText: String? = null,
     val targeting: CampaignTargeting? = null
 )

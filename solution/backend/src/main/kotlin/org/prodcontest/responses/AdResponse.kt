@@ -1,7 +1,7 @@
 package org.prodcontest.responses
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.UUID
+import java.util.*
 
 class AdResponse(
     @JsonProperty("ad_id")
