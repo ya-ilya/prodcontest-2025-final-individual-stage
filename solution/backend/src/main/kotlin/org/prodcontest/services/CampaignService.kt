@@ -4,6 +4,7 @@ import org.prodcontest.entities.advertiser.Advertiser
 import org.prodcontest.entities.campaign.Campaign
 import org.prodcontest.entities.campaign.CampaignRepository
 import org.prodcontest.entities.campaign.CampaignTargeting
+import org.prodcontest.entities.client.Client
 import org.prodcontest.services.pagination.OffsetBasedPageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -11,11 +12,26 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
-class CampaignService(private val campaignRepository: CampaignRepository) {
+class CampaignService(
+    private val campaignRepository: CampaignRepository,
+    private val dateService: DateService
+) {
     fun getById(id: UUID): Campaign {
         return campaignRepository
             .findById(id)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+    }
+
+    fun findAd(
+        client: Client
+    ): List<Campaign> {
+        return campaignRepository.findAd(
+            client.gender,
+            client.age,
+            client.location,
+            client.id!!,
+            dateService.getCurrentDate()
+        )
     }
 
     fun findByAdvertiser(

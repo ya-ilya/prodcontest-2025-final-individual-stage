@@ -1,15 +1,16 @@
-package org.prodcontest.entities.mlscore
+package org.prodcontest.entities.click
 
 import jakarta.persistence.*
-import org.prodcontest.entities.advertiser.Advertiser
+import org.prodcontest.entities.campaign.Campaign
 import org.prodcontest.entities.client.Client
 import java.util.*
 
 @Entity
-class MLScore(
-    val score: Int,
+class Click(
+    val date: Int,
+    val cost: Float,
     @ManyToOne
-    val advertiser: Advertiser,
+    val campaign: Campaign,
     @ManyToOne
     val client: Client,
     @Id

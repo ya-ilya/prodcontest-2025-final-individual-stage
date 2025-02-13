@@ -23,19 +23,22 @@ class CampaignsController(
     fun create(
         @PathVariable advertiserId: UUID,
         @Valid @RequestBody request: CampaignCreateRequest
-    ): CampaignResponse {
-        return campaignService.create(
-            advertiserService.getById(advertiserId),
-            request.impressionsLimit,
-            request.clicksLimit,
-            request.costPerImpression,
-            request.costPerClick,
-            request.adTitle,
-            request.adText,
-            request.startDate,
-            request.endDate,
-            request.targeting
-        ).toResponse()
+    ): ResponseEntity<CampaignResponse> {
+        return ResponseEntity(
+            campaignService.create(
+                advertiserService.getById(advertiserId),
+                request.impressionsLimit,
+                request.clicksLimit,
+                request.costPerImpression,
+                request.costPerClick,
+                request.adTitle,
+                request.adText,
+                request.startDate,
+                request.endDate,
+                request.targeting
+            ).toResponse(),
+            HttpStatus.CREATED
+        )
     }
 
     @GetMapping

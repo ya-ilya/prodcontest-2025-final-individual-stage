@@ -14,5 +14,6 @@ class DailyStatsResponse(
     @JsonProperty("spent_clicks")
     val spentClicks: Float,
     @JsonProperty("spent_total")
-    val spentTotal: Float
+    val spentTotal: Float,
+    val date: Int
 )

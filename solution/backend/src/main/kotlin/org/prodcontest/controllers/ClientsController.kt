@@ -4,6 +4,8 @@ import jakarta.validation.Valid
 import org.prodcontest.requests.ClientUpsertRequest
 import org.prodcontest.responses.ClientResponse
 import org.prodcontest.services.ClientService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -16,7 +18,7 @@ class ClientsController(private val clientService: ClientService) {
     }
 
     @PostMapping("/bulk")
-    fun bulk(@Valid @RequestBody request: List<ClientUpsertRequest>) {
+    fun bulk(@Valid @RequestBody request: List<ClientUpsertRequest>): ResponseEntity<Any> {
         request.forEach {
             clientService.createOrUpdate(
                 it.clientId,
@@ -26,5 +28,7 @@ class ClientsController(private val clientService: ClientService) {
                 it.gender
             )
         }
+
+        return ResponseEntity(HttpStatus.CREATED)
     }
 }

@@ -22,7 +22,7 @@ class AdvertiserService(private val advertiserRepository: AdvertiserRepository) 
         return advertiserRepository.save(
             Advertiser(
                 name,
-                id
+                id = id
             )
         )
     }

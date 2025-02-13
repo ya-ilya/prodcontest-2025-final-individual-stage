@@ -4,6 +4,8 @@ import jakarta.validation.Valid
 import org.prodcontest.requests.AdvertiserUpsertRequest
 import org.prodcontest.responses.AdvertiserResponse
 import org.prodcontest.services.AdvertiserService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -16,12 +18,14 @@ class AdvertisersController(private val advertiserService: AdvertiserService) {
     }
 
     @PostMapping("/bulk")
-    fun bulk(@Valid @RequestBody request: List<AdvertiserUpsertRequest>) {
+    fun bulk(@Valid @RequestBody request: List<AdvertiserUpsertRequest>): ResponseEntity<Any> {
         request.forEach {
             advertiserService.createOrUpdate(
                 it.advertiserId,
                 it.name
             )
         }
+
+        return ResponseEntity(HttpStatus.CREATED)
     }
 }

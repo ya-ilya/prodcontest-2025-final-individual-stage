@@ -1,9 +1,6 @@
 package org.prodcontest.entities.client
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import org.prodcontest.enums.Gender
 import org.prodcontest.responses.ClientResponse
 import java.util.*
@@ -13,6 +10,7 @@ class Client(
     val login: String,
     val age: Int,
     val location: String,
+    @Enumerated(EnumType.STRING)
     val gender: Gender,
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
