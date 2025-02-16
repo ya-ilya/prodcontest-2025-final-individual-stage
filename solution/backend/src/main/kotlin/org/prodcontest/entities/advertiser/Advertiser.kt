@@ -1,6 +1,8 @@
 package org.prodcontest.entities.advertiser
 
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import org.prodcontest.entities.campaign.Campaign
 import org.prodcontest.entities.mlscore.MLScore
 import org.prodcontest.responses.AdvertiserResponse
@@ -14,11 +16,10 @@ class Advertiser(
     @OneToMany(mappedBy = "advertiser")
     val mlScores: List<MLScore> = listOf(),
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID? = null
+    val id: UUID
 ) {
     fun toResponse() = AdvertiserResponse(
-        id!!,
+        id,
         name
     )
 }

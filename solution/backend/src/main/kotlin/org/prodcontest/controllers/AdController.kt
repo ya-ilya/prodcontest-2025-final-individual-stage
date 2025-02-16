@@ -6,6 +6,7 @@ import org.prodcontest.responses.AdResponse
 import org.prodcontest.services.CampaignService
 import org.prodcontest.services.ClickService
 import org.prodcontest.services.ClientService
+import org.prodcontest.services.ImpressionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,17 +14,21 @@ import java.util.*
 
 @RestController
 @RequestMapping("/ads")
-class AdsController(
+class AdController(
     private val clickService: ClickService,
     private val campaignService: CampaignService,
-    private val clientService: ClientService
+    private val clientService: ClientService,
+    private val impressionService: ImpressionService
 ) {
     @GetMapping
     fun get(@RequestParam(required = true, name = "client_id") clientId: UUID): AdResponse {
-        return campaignService
-            .findAd(clientService.getById(clientId))
-            .random()
-            .toAdResponse()
+        val client = clientService.getById(clientId)
+        val ad = campaignService
+            .findRelevantAd(client)
+
+        impressionService.create(ad, client)
+
+        return ad.toAdResponse()
     }
 
     @PostMapping("/{adId}/click")

@@ -13,12 +13,18 @@ class MLScoreService(private val mlScoreRepository: MLScoreRepository) {
         advertiser: Advertiser,
         score: Int
     ): MLScore {
-        return mlScoreRepository.save(
+        val mlScore = mlScoreRepository.findByAdvertiserAndClient(advertiser, client).orElseGet {
             MLScore(
                 score,
                 advertiser,
                 client
             )
+        }
+
+        return mlScoreRepository.save(
+            mlScore.apply {
+                this.score = score
+            }
         )
     }
 }

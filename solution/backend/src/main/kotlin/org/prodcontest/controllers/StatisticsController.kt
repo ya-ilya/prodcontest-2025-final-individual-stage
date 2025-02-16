@@ -13,7 +13,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/stats")
-class StatsController(
+class StatisticsController(
     private val campaignService: CampaignService,
     private val advertiserService: AdvertiserService,
     private val dateService: DateService

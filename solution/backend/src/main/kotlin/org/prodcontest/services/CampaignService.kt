@@ -22,16 +22,15 @@ class CampaignService(
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
     }
 
-    fun findAd(
-        client: Client
-    ): List<Campaign> {
-        return campaignRepository.findAds(
+    fun findRelevantAd(client: Client): Campaign {
+        return campaignRepository.findRelevantAds(
             client.gender,
             client.age,
             client.location,
-            client.id!!,
-            dateService.getCurrentDate()
-        )
+            client.id,
+            dateService.getCurrentDate(),
+            OffsetBasedPageRequest(0, 1)
+        ).single()
     }
 
     fun findByAdvertiser(
@@ -39,7 +38,10 @@ class CampaignService(
         size: Int,
         page: Int
     ): Pair<Int, List<Campaign>> {
-        val result = campaignRepository.findAll(OffsetBasedPageRequest(offset = page, limit = size))
+        val result = campaignRepository.findByAdvertiser(
+            advertiser.id,
+            OffsetBasedPageRequest(offset = page, limit = size)
+        )
         return result.totalElements.toInt() to result.content
     }
 

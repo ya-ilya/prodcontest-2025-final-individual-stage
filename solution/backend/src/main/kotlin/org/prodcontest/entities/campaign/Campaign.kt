@@ -3,7 +3,9 @@ package org.prodcontest.entities.campaign
 import jakarta.persistence.*
 import org.prodcontest.entities.advertiser.Advertiser
 import org.prodcontest.entities.click.Click
+import org.prodcontest.entities.click.nonunique.NonUniqueClick
 import org.prodcontest.entities.impression.Impression
+import org.prodcontest.entities.impression.nonunique.NonUniqueImpression
 import org.prodcontest.responses.AdResponse
 import org.prodcontest.responses.CampaignResponse
 import org.prodcontest.responses.DailyStatsResponse
@@ -28,13 +30,17 @@ class Campaign(
     val impressions: List<Impression> = emptyList(),
     @OneToMany(mappedBy = "campaign")
     val clicks: List<Click> = emptyList(),
+    @OneToMany(mappedBy = "campaign")
+    val nonUniqueImpressions: List<NonUniqueImpression> = emptyList(),
+    @OneToMany(mappedBy = "campaign")
+    val nonUniqueClicks: List<NonUniqueClick> = emptyList(),
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID? = null
 ) {
     fun toResponse() = CampaignResponse(
         id!!,
-        advertiser.id!!,
+        advertiser.id,
         impressionsLimit,
         clicksLimit,
         costPerImpression,
@@ -87,6 +93,6 @@ class Campaign(
         id!!,
         adTitle,
         adText,
-        advertiser.id!!
+        advertiser.id
     )
 }

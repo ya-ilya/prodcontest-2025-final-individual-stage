@@ -27,6 +27,10 @@ class ClientService(private val clientRepository: ClientRepository) {
             throw ResponseStatusException(HttpStatus.CONFLICT)
         }
 
+        if (clientRepository.findById(id).isPresent) {
+            throw ResponseStatusException(HttpStatus.CONFLICT)
+        }
+
         return clientRepository.save(
             Client(
                 login,

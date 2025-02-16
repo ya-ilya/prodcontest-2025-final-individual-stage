@@ -11,7 +11,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/clients")
-class ClientsController(private val clientService: ClientService) {
+class ClientController(private val clientService: ClientService) {
     @GetMapping("/{id}")
     fun getById(@PathVariable id: UUID): ClientResponse {
         return clientService.getById(id).toResponse()

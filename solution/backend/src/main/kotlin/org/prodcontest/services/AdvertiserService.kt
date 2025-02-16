@@ -19,6 +19,10 @@ class AdvertiserService(private val advertiserRepository: AdvertiserRepository) 
         id: UUID,
         name: String
     ): Advertiser {
+        if (advertiserRepository.findById(id).isPresent) {
+            throw ResponseStatusException(HttpStatus.CONFLICT)
+        }
+
         return advertiserRepository.save(
             Advertiser(
                 name,

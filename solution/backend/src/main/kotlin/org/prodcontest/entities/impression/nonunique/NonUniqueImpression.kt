@@ -1,15 +1,15 @@
-package org.prodcontest.entities.mlscore
+package org.prodcontest.entities.impression.nonunique
 
 import jakarta.persistence.*
-import org.prodcontest.entities.advertiser.Advertiser
+import org.prodcontest.entities.campaign.Campaign
 import org.prodcontest.entities.client.Client
 import java.util.*
 
 @Entity
-class MLScore(
-    var score: Int,
+class NonUniqueImpression(
+    var count: Int,
     @ManyToOne
-    val advertiser: Advertiser,
+    val campaign: Campaign,
     @ManyToOne
     val client: Client,
     @Id

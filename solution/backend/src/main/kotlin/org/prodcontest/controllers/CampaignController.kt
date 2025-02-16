@@ -15,7 +15,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/advertisers/{advertiserId}/campaigns")
-class CampaignsController(
+class CampaignController(
     private val campaignService: CampaignService,
     private val advertiserService: AdvertiserService
 ) {
