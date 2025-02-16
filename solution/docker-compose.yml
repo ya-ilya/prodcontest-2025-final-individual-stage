@@ -33,8 +33,19 @@ services:
     depends_on:
       database:
         condition: service_healthy
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - net
 volumes:
   mysql_data:
+  grafana_data:
   images:
 networks:
   net:
