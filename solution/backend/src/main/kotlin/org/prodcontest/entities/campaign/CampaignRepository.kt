@@ -59,11 +59,11 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
                 COALESCE((SELECT MAX(s.score) FROM c.advertiser.mlScores s WHERE s.client.id = :clientId), 0) * 3 DESC,
                 COALESCE((SELECT MAX(nui.count) FROM c.nonUniqueImpressions nui WHERE nui.client.id = :clientId), 0) * 1 ASC,
                 COALESCE((SELECT MAX(nuc.count) FROM c.nonUniqueClicks nuc WHERE nuc.client.id = :clientId), 0) * 2 DESC,
-                (SIZE(c.clicks) / SIZE(s.impressions)) * 3 DESC,
+                (SIZE(c.clicks) / SIZE(c.impressions)) * 3 DESC,
                 (c.impressionsLimit - SIZE(c.impressions)) * 2 ASC,
                 (c.clicksLimit - SIZE(c.clicks)) * 2 ASC,
                 c.costPerImpression * 1 DESC,
-                c.costPerClick * 1 DESC,
+                c.costPerClick * 1 DESC
         """
     )
     fun findRelevantAds(

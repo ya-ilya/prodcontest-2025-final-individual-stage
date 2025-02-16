@@ -21,6 +21,8 @@ class CampaignResponse(
     val adTitle: String,
     @JsonProperty("ad_text")
     val adText: String,
+    @JsonProperty("has_image")
+    val hasImage: Boolean,
     @JsonProperty("start_date")
     val startDate: Int,
     @JsonProperty("end_date")

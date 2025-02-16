@@ -10,6 +10,8 @@ class AdResponse(
     val adTitle: String,
     @JsonProperty("ad_text")
     val adText: String,
+    @JsonProperty("has_image")
+    val hasImage: Boolean,
     @JsonProperty("advertiser_id")
     val advertiserId: UUID
 )

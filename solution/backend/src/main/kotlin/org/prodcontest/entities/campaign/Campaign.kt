@@ -20,6 +20,7 @@ class Campaign(
     var costPerClick: Float,
     var adTitle: String,
     var adText: String,
+    var adImage: String? = null,
     val startDate: Int,
     val endDate: Int,
     @Embedded
@@ -47,6 +48,7 @@ class Campaign(
         costPerClick,
         adTitle,
         adText,
+        adImage != null,
         startDate,
         endDate,
         targeting
@@ -93,6 +95,7 @@ class Campaign(
         id!!,
         adTitle,
         adText,
+        adImage != null,
         advertiser.id
     )
 }

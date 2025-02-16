@@ -65,6 +65,7 @@ class CampaignService(
                 costPerClick,
                 adTitle,
                 adText,
+                null,
                 startDate,
                 endDate,
                 targeting,

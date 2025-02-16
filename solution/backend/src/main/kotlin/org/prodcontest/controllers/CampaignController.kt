@@ -6,10 +6,15 @@ import org.prodcontest.requests.CampaignUpdateRequest
 import org.prodcontest.responses.CampaignResponse
 import org.prodcontest.services.AdvertiserService
 import org.prodcontest.services.CampaignService
+import org.prodcontest.services.ImageStorageService
+import org.springframework.core.io.ByteArrayResource
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
@@ -17,7 +22,8 @@ import java.util.*
 @RequestMapping("/advertisers/{advertiserId}/campaigns")
 class CampaignController(
     private val campaignService: CampaignService,
-    private val advertiserService: AdvertiserService
+    private val advertiserService: AdvertiserService,
+    private val imageStorageService: ImageStorageService
 ) {
     @PostMapping
     fun create(
@@ -74,6 +80,74 @@ class CampaignController(
         }
 
         return campaign.toResponse()
+    }
+
+    @ResponseBody
+    @GetMapping("/{id}/image", produces = [MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE])
+    fun getImage(
+        @PathVariable advertiserId: UUID,
+        @PathVariable id: UUID
+    ): ResponseEntity<Resource> {
+        val campaign = campaignService.getById(id)
+
+        if (campaign.advertiser.id != advertiserId) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+
+        if (campaign.adImage == null) {
+            return ResponseEntity(HttpStatus.NO_CONTENT)
+        }
+
+        try {
+            val resource = imageStorageService.loadImage(campaign.adImage!!)
+            return ResponseEntity(ByteArrayResource(resource.contentAsByteArray), HttpStatus.OK)
+        } catch (ex: RuntimeException) {
+            campaignService.update(campaign.apply {
+                this.adImage = null
+            })
+            return ResponseEntity(HttpStatus.NO_CONTENT)
+        }
+    }
+
+    @PostMapping("/{id}/image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun uploadImage(
+        @PathVariable advertiserId: UUID,
+        @PathVariable id: UUID,
+        @RequestParam("image") image: MultipartFile
+    ) {
+        val campaign = campaignService.getById(id)
+
+        if (campaign.advertiser.id != advertiserId) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+
+        val fileName = imageStorageService.storeImage(image)
+
+        campaignService.update(
+            campaign.apply {
+                if (this.adImage != null) {
+                    imageStorageService.deleteImage(this.adImage!!)
+                }
+
+                this.adImage = fileName
+            }
+        )
+    }
+
+    @DeleteMapping("/{id}/image")
+    fun deleteImage(
+        @PathVariable advertiserId: UUID,
+        @PathVariable id: UUID
+    ) {
+        val campaign = campaignService.getById(id)
+
+        if (campaign.advertiser.id != advertiserId) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+
+        if (campaign.adImage != null) {
+            imageStorageService.deleteImage(campaign.adImage!!)
+        }
     }
 
     @PutMapping("/{id}")
