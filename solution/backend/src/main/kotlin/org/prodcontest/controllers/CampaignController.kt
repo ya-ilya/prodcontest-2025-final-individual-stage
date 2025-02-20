@@ -69,7 +69,7 @@ class CampaignController(
     }
 
     @GetMapping("/{id}")
-    fun getById(
+    fun get(
         @PathVariable advertiserId: UUID,
         @PathVariable id: UUID
     ): CampaignResponse {

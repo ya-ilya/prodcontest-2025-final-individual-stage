@@ -13,7 +13,7 @@ import java.util.*
 @RequestMapping("/clients")
 class ClientController(private val clientService: ClientService) {
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: UUID): ClientResponse {
+    fun get(@PathVariable id: UUID): ClientResponse {
         return clientService.getById(id).toResponse()
     }
 

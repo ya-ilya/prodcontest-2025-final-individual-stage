@@ -19,6 +19,17 @@ services:
       interval: 5s
       test: (mysqladmin ping --silent && exit 1) || echo 0
     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - net
   backend:
     container_name: backend
     build:
@@ -29,23 +40,13 @@ services:
     networks:
       - net
     volumes:
-      - images:/app/images
+      - backend_data:/app/images
     depends_on:
       database:
         condition: service_healthy
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=password
-    volumes:
-      - grafana_data:/var/lib/grafana
-    networks:
-      - net
 volumes:
   mysql_data:
   grafana_data:
-  images:
+  backend_data:
 networks:
   net:

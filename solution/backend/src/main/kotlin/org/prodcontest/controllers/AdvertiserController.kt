@@ -19,7 +19,7 @@ class AdvertiserController(
     private val clientService: ClientService
 ) {
     @GetMapping("/advertisers/{id}")
-    fun getById(@PathVariable id: UUID): AdvertiserResponse {
+    fun get(@PathVariable id: UUID): AdvertiserResponse {
         return advertiserService.getById(id).toResponse()
     }
 

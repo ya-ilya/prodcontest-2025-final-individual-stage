@@ -5,7 +5,7 @@ WORKDIR /backend
 COPY gradle.properties settings.gradle.kts gradlew ./
 COPY backend ./
 
-RUN --mount=type=cache,target=/root/.gradle gradle --no-daemon clean build
+RUN --mount=type=cache,target=/root/.gradle gradle --no-daemon clean bootJar
 
 FROM eclipse-temurin:21-jdk-alpine
 
