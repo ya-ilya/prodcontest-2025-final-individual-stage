@@ -7,6 +7,7 @@ import org.prodcontest.responses.CampaignResponse
 import org.prodcontest.services.AdvertiserService
 import org.prodcontest.services.CampaignService
 import org.prodcontest.services.ImageStorageService
+import org.prodcontest.services.TextModerationService
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
@@ -23,13 +24,18 @@ import java.util.*
 class CampaignController(
     private val campaignService: CampaignService,
     private val advertiserService: AdvertiserService,
-    private val imageStorageService: ImageStorageService
+    private val imageStorageService: ImageStorageService,
+    private val textModerationService: TextModerationService
 ) {
     @PostMapping
     fun create(
         @PathVariable advertiserId: UUID,
         @Valid @RequestBody request: CampaignCreateRequest
     ): ResponseEntity<CampaignResponse> {
+        if (!textModerationService.moderate(request.adTitle) || !textModerationService.moderate(request.adText)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        }
+
         return ResponseEntity(
             campaignService.create(
                 advertiserService.getById(advertiserId),

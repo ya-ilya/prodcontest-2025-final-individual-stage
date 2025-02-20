@@ -35,6 +35,8 @@ services:
     build:
       context: .
       dockerfile: backend.dockerfile
+    environment:
+      TEXT_MODERATION: false
     ports:
       - "8080:8080"
     networks:

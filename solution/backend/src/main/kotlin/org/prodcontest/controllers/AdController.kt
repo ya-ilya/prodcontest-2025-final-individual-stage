@@ -21,14 +21,18 @@ class AdController(
     private val impressionService: ImpressionService
 ) {
     @GetMapping
-    fun get(@RequestParam(required = true, name = "client_id") clientId: UUID): AdResponse {
-        val client = clientService.getById(clientId)
-        val ad = campaignService
-            .findRelevantAd(client)
+    fun get(@RequestParam(required = true, name = "client_id") clientId: UUID): ResponseEntity<AdResponse> {
+        try {
+            val client = clientService.getById(clientId)
+            val ad = campaignService
+                .findRelevantAd(client)
 
-        impressionService.create(ad, client)
+            impressionService.create(ad, client)
 
-        return ad.toAdResponse()
+            return ResponseEntity(ad.toAdResponse(), HttpStatus.OK)
+        } catch (ex: Exception) {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+        }
     }
 
     @PostMapping("/{adId}/click")
