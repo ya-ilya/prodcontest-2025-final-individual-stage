@@ -33,8 +33,6 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
      * - Количество показов данному пользователю (по возрастанию). Вес - 1
      * - Количество кликов от данного пользователя (по убыванию). Вес - 2
      * - Конверсия (по убыванию). Вес - 3
-     * - Цена за показ (по убыванию). Вес - 1
-     * - Цена за клик (по убыванию). Вес - 1
      * - Количество оставшихся показов (по убыванию). Вес - 2
      * - Количество оставшихся кликов (по убыванию). Вес - 2
      *
@@ -57,14 +55,15 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
                 AND c.startDate <= :currentDate
                 AND c.endDate >= :currentDate
             ORDER BY
-                COALESCE((SELECT MAX(s.score) FROM c.advertiser.mlScores s WHERE s.client.id = :clientId), 0) * 3 DESC,
+                COALESCE(
+                    (SELECT MAX(s.score) FROM c.advertiser.mlScores s WHERE s.client.id = :clientId),
+                    (SELECT AVG(s.score) FROM c.advertiser.mlScores s WHERE 1=1)
+                ) * 3 DESC,
                 COALESCE((SELECT nui.count FROM c.nonUniqueImpressions nui WHERE nui.client.id = :clientId), 0) * 1 DESC,
                 COALESCE((SELECT nuc.count FROM c.nonUniqueClicks nuc WHERE nuc.client.id = :clientId), 0) * 2 DESC,
                 (CASE WHEN SIZE(c.impressions) > 0 THEN (SIZE(c.clicks) / SIZE(c.impressions)) ELSE 0 END) * 3 DESC,
-                (c.impressionsLimit - SIZE(c.impressions)) * 2 ASC,
-                (c.clicksLimit - SIZE(c.clicks)) * 2 ASC,
-                c.costPerImpression * 1 DESC,
-                c.costPerClick * 1 DESC
+                (c.impressionsLimit - SIZE(c.impressions)) * (CASE WHEN c.costPerImpression > c.costPerClick THEN 2 ELSE 1 END) DESC,
+                (c.clicksLimit - SIZE(c.clicks)) * (CASE WHEN c.costPerClick > c.costPerImpression THEN 2 ELSE 1 END) DESC
         """
     )
     fun findRelevantAds(
