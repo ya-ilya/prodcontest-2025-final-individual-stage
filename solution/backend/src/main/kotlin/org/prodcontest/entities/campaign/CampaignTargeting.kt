@@ -12,15 +12,15 @@ import org.prodcontest.enums.Gender
 @Embeddable
 class CampaignTargeting(
     @Enumerated(EnumType.STRING)
-    val gender: Gender,
+    val gender: Gender? = null,
     @JsonProperty("age_from")
     @Min(0)
     @Max(100)
-    val ageFrom: Int,
+    val ageFrom: Int? = null,
     @JsonProperty("age_to")
     @Min(0)
     @Max(100)
-    val ageTo: Int,
+    val ageTo: Int? = null,
     @Size(min = 1)
-    val location: String
+    val location: String? = null
 )

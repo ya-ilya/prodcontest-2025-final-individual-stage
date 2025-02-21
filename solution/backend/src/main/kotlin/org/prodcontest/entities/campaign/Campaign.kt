@@ -24,7 +24,7 @@ class Campaign(
     val startDate: Int,
     val endDate: Int,
     @Embedded
-    var targeting: CampaignTargeting? = null,
+    var targeting: CampaignTargeting = CampaignTargeting(),
     @ManyToOne
     val advertiser: Advertiser,
     @OneToMany(mappedBy = "campaign")

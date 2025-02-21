@@ -68,7 +68,7 @@ class CampaignService(
                 null,
                 startDate,
                 endDate,
-                targeting,
+                targeting ?: CampaignTargeting(),
                 advertiser
             )
         )

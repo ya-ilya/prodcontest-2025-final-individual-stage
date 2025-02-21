@@ -27,5 +27,5 @@ class CampaignResponse(
     val startDate: Int,
     @JsonProperty("end_date")
     val endDate: Int,
-    val targeting: CampaignTargeting? = null
+    val targeting: CampaignTargeting
 )

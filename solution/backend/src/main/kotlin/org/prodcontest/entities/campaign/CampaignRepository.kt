@@ -48,10 +48,11 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
     @Query(
         """
             SELECT c FROM Campaign c
-            WHERE (c.targeting.gender = :gender OR c.targeting.gender = "ALL")
-                AND c.targeting.ageFrom <= :age
-                AND c.targeting.ageTo >= :age
-                AND c.targeting.location = :location
+            WHERE
+                (c.targeting.gender IS NULL OR c.targeting.gender = :gender OR c.targeting.gender = "ALL")
+                AND (c.targeting.ageFrom IS NULL OR c.targeting.ageFrom <= :age)
+                AND (c.targeting.ageTo IS NULL OR c.targeting.ageTo >= :age)
+                AND (c.targeting.location IS NULL OR c.targeting.location = :location)
                 AND (SIZE(c.impressions) < c.impressionsLimit OR SIZE(c.clicks) < c.clicksLimit)
                 AND c.startDate <= :currentDate
                 AND c.endDate >= :currentDate
