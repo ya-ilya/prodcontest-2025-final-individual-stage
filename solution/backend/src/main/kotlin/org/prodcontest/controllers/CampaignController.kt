@@ -95,11 +95,15 @@ class CampaignController(
         val campaign = campaignService.getById(id)
 
         if (campaign.advertiser.id != advertiserId) {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .build()
         }
 
         if (campaign.adImage == null) {
-            return ResponseEntity(HttpStatus.NO_CONTENT)
+            return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build()
         }
 
         try {

@@ -44,7 +44,7 @@ class AdController(
         )
 
         return ResponseEntity
-            .noContent()
+            .status(HttpStatus.NO_CONTENT)
             .build()
     }
 }
