@@ -53,7 +53,7 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
                 AND (c.targeting.ageFrom IS NULL OR c.targeting.ageFrom <= :age)
                 AND (c.targeting.ageTo IS NULL OR c.targeting.ageTo >= :age)
                 AND (c.targeting.location IS NULL OR c.targeting.location = :location)
-                AND (SIZE(c.impressions) <= c.impressionsLimit AND SIZE(c.clicks) <= c.clicksLimit)
+                AND (SIZE(c.impressions) < c.impressionsLimit AND SIZE(c.clicks) < c.clicksLimit)
                 AND c.startDate <= :currentDate
                 AND c.endDate >= :currentDate
             ORDER BY
@@ -77,5 +77,5 @@ interface CampaignRepository : JpaRepository<Campaign, UUID> {
         @Param("clientId") clientId: UUID,
         @Param("currentDate") currentDate: Int,
         pageable: Pageable
-    ): Page<Campaign>
+    ): List<Campaign>
 }
