@@ -17,7 +17,7 @@ services:
       - net
     healthcheck:
       interval: 15s
-      test: (mysqladmin ping --silent && exit 1) || echo 0
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
   grafana:
     container_name: grafana
