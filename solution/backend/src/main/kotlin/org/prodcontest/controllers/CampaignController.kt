@@ -10,7 +10,6 @@ import org.prodcontest.services.ImageStorageService
 import org.prodcontest.services.TextModerationService
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -36,21 +35,22 @@ class CampaignController(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         }
 
-        return ResponseEntity(
-            campaignService.create(
-                advertiserService.getById(advertiserId),
-                request.impressionsLimit,
-                request.clicksLimit,
-                request.costPerImpression,
-                request.costPerClick,
-                request.adTitle,
-                request.adText,
-                request.startDate,
-                request.endDate,
-                request.targeting
-            ).toResponse(),
-            HttpStatus.CREATED
-        )
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                campaignService.create(
+                    advertiserService.getById(advertiserId),
+                    request.impressionsLimit,
+                    request.clicksLimit,
+                    request.costPerImpression,
+                    request.costPerClick,
+                    request.adTitle,
+                    request.adText,
+                    request.startDate,
+                    request.endDate,
+                    request.targeting
+                ).toResponse()
+            )
     }
 
     @GetMapping
@@ -59,19 +59,17 @@ class CampaignController(
         @RequestParam(value = "size", required = false, defaultValue = "10") size: Int,
         @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
     ): ResponseEntity<List<CampaignResponse>> {
-        val (count, campaigns) = campaignService.findByAdvertiser(
+        val result = campaignService.findByAdvertiser(
             advertiserService.getById(advertiserId),
             size,
             page
         )
 
-        return ResponseEntity(
-            campaigns.map { it.toResponse() },
-            HttpHeaders().apply {
-                set("X-Total-Count", count.toString())
-            },
-            HttpStatus.OK
-        )
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .header("X-Total-Count", result.totalElements.toString())
+            .header("X-Total-Pages", result.totalPages.toString())
+            .body(result.content.map { it.toResponse() })
     }
 
     @GetMapping("/{id}")
@@ -106,12 +104,18 @@ class CampaignController(
 
         try {
             val resource = imageStorageService.loadImage(campaign.adImage!!)
-            return ResponseEntity(ByteArrayResource(resource.contentAsByteArray), HttpStatus.OK)
+
+            return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ByteArrayResource(resource.contentAsByteArray))
         } catch (ex: RuntimeException) {
             campaignService.update(campaign.apply {
                 this.adImage = null
             })
-            return ResponseEntity(HttpStatus.NO_CONTENT)
+
+            return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build()
         }
     }
 

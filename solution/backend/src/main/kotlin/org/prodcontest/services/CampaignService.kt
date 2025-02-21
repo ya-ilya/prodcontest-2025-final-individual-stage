@@ -6,6 +6,7 @@ import org.prodcontest.entities.campaign.CampaignRepository
 import org.prodcontest.entities.campaign.CampaignTargeting
 import org.prodcontest.entities.client.Client
 import org.prodcontest.services.pagination.OffsetBasedPageRequest
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -30,19 +31,18 @@ class CampaignService(
             client.id,
             dateService.getCurrentDate(),
             OffsetBasedPageRequest(0, 1)
-        ).single()
+        ).singleOrNull() ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     fun findByAdvertiser(
         advertiser: Advertiser,
         size: Int,
         page: Int
-    ): Pair<Int, List<Campaign>> {
-        val result = campaignRepository.findByAdvertiser(
+    ): Page<Campaign> {
+        return campaignRepository.findByAdvertiser(
             advertiser.id,
             OffsetBasedPageRequest(offset = page, limit = size)
         )
-        return result.totalElements.toInt() to result.content
     }
 
     fun create(

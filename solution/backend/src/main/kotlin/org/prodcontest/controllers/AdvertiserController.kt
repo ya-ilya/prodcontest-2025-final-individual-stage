@@ -25,12 +25,16 @@ class AdvertiserController(
 
     @PostMapping("/advertisers/bulk")
     fun bulk(@Valid @RequestBody request: List<AdvertiserUpsertRequest>): ResponseEntity<Any> {
-        return ResponseEntity(request.map {
-            advertiserService.createOrUpdate(
-                it.advertiserId,
-                it.name
-            ).toResponse()
-        }, HttpStatus.CREATED)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                request.map {
+                    advertiserService.createOrUpdate(
+                        it.advertiserId,
+                        it.name
+                    ).toResponse()
+                }
+            )
     }
 
     @PostMapping("/ml-scores")

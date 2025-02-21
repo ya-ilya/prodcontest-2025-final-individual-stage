@@ -19,14 +19,18 @@ class ClientController(private val clientService: ClientService) {
 
     @PostMapping("/bulk")
     fun bulk(@Valid @RequestBody request: List<ClientUpsertRequest>): ResponseEntity<Any> {
-        return ResponseEntity(request.map {
-            clientService.createOrUpdate(
-                it.clientId,
-                it.login,
-                it.age,
-                it.location,
-                it.gender
-            ).toResponse()
-        }, HttpStatus.CREATED)
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                request.map {
+                    clientService.createOrUpdate(
+                        it.clientId,
+                        it.login,
+                        it.age,
+                        it.location,
+                        it.gender
+                    ).toResponse()
+                }
+            )
     }
 }
