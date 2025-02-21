@@ -31,15 +31,15 @@ class ClickService(
             )
 
             return null
-        } else {
-            return clickRepository.save(
-                Click(
-                    dateService.getCurrentDate(),
-                    campaign.costPerClick,
-                    campaign,
-                    client
-                )
-            )
         }
+
+        return clickRepository.save(
+            Click(
+                dateService.getCurrentDate(),
+                campaign.costPerClick,
+                campaign,
+                client
+            )
+        )
     }
 }
