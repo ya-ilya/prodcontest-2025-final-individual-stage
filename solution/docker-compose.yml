@@ -16,7 +16,7 @@ services:
     networks:
       - net
     healthcheck:
-      interval: 5s
+      interval: 15s
       test: (mysqladmin ping --silent && exit 1) || echo 0
     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
   grafana:
